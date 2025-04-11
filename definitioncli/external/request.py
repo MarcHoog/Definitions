@@ -1,6 +1,34 @@
 import json
-from typing import Any
 from requests import Response, request
+from requests.auth import AuthBase
+
+
+class BearerAuth(AuthBase):
+    """
+    Custom authentication class for Bearer token authentication.
+    """
+
+    def __init__(self, token: str):
+        """
+        Initialize BearerAuth with a token.
+
+        Parameters:
+            token (str): The Bearer token for authentication.
+        """
+        self.token = token
+
+    def __call__(self, request):
+        """
+        Attach the Bearer token to the request headers.
+
+        Parameters:
+            request (requests.PreparedRequest): The request object.
+
+        Returns:
+            requests.PreparedRequest: The modified request object.
+        """
+        request.headers["Authorization"] = f"Bearer {self.token}"
+        return request
 
 
 class ApiRequest(object):
@@ -8,7 +36,10 @@ class ApiRequest(object):
     Handles HTTPs request easily and dynamically.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        **kwargs,
+    ):
         """
         Initialize request with provided keyword arguments.
 
@@ -16,7 +47,6 @@ class ApiRequest(object):
             **kwargs: Arbitrary keyword arguments containing request details.
         """
         self._store = kwargs
-        self.authenticate = kwargs.get("authenticate")
 
     @staticmethod
     def normalize_url(url):
@@ -46,7 +76,7 @@ class ApiRequest(object):
         """
         return f"{url}/{path}"
 
-    def __getattr__(self, resource: str) -> Any:
+    def __getattr__(self, resource: str) -> "ApiRequest":
         """
         Dynamically handle resource paths as attributes.
 
@@ -100,7 +130,7 @@ class ApiRequest(object):
             params=params,
             data=data,
             verify=self._store["verify_ssl"],
-            auth=self.authenticate,
+            auth=self._store.get("authenticate", None),
             headers=headers,
         )
 
