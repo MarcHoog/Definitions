@@ -1,0 +1,6 @@
+.venv
+plugnplay.egg-info
+__pycache__/
+.vscode/
+logs/
+payload.json
