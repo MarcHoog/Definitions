@@ -1,0 +1,17 @@
+{# A simple Terraform configuration rendered by Jinja2 #}
+
+{# module definition #}
+module "{{ module_name }}" { {
+  {% for key, value in module_attributes.items() %}
+  {{ key }} = "{{ value }}"
+  {% endfor %}
+
+  {# Optional tags block, only rendered if provided #}
+  {% if resource_tags %}
+  tags = {
+    {% for tag, val in resource_tags.items() %}
+    {{ tag }} = "{{ val }}"
+    {% endfor %}
+  }
+  {% endif %}
+}

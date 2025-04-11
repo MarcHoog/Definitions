@@ -21,7 +21,7 @@ class HetznerServerStorageFirewall(TerraformModule):
     firewall_in_source_Ips: List[Text]
 
     @classmethod
-    def __options__(self) -> Dict:
+    def __opts__(cls) -> Dict:
         return {
             "server_type": [
                 "cx11",
