@@ -33,3 +33,8 @@ class HetznerServerStorageFirewall(TerraformModule):
                 "cxfr",
             ],
         }
+
+
+definitions = [
+    HetznerServerStorageFirewall,
+]
